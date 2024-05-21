@@ -36,6 +36,16 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
+## Deploy with Serverless
+
+```bash
+# Deploy with default config
+$ sls deploy
+
+# Remove deployed services
+$ sls remove
+```
+
 ## License
 
 Nest is [MIT licensed](LICENSE).

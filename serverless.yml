@@ -1,18 +1,5 @@
 service: aws-serverless-experiments
 
-custom:
-  serverless-offline:
-    noPrependStageInUrl: true
-    httpPort: 9090
-
-plugins:
-  - serverless-offline
-
-provider:
-  name: aws
-  region: us-east-1
-  runtime: nodejs18.x
-
 functions:
   main:
     handler: dist/main.handler
@@ -24,9 +11,28 @@ functions:
           method: ANY
           path: '{proxy+}'
 
+custom:
+  serverless-offline:
+    noPrependStageInUrl: true
+    httpPort: 9090
+
+provider:
+  profile: chandan-vishwakarma-experiments
+  name: aws
+  region: ap-south-1
+  stage: dev
+  runtime: nodejs18.x
+  memorySize: 256
+  timeout: 10
+  lambdaHashingVersion: 20201221
+  logRetentionInDays: 1
+
 package:
   individually: true
   exclude:
     - './**'
   include:
     - 'dist/**'
+
+plugins:
+  - serverless-offline
