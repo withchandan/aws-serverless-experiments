@@ -4,7 +4,8 @@ functions:
   main:
     handler: dist/main.handler
     description: API for experimenting purpose
-    provisionedConcurrency: 2
+    # provisionedConcurrency: 2
+    lambdaInsights: true
     events:
       - http:
           method: ANY
@@ -38,3 +39,4 @@ package:
 
 plugins:
   - serverless-offline
+  - serverless-plugin-lambda-insights
