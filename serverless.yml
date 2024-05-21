@@ -3,6 +3,8 @@ service: aws-serverless-experiments
 functions:
   main:
     handler: dist/main.handler
+    description: API for experimenting purpose
+    provisionedConcurrency: 2
     events:
       - http:
           method: ANY
