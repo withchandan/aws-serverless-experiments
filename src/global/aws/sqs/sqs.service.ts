@@ -32,7 +32,7 @@ export class SqsService implements Queue {
   private queueUrlMap: Map<string, string>;
 
   constructor(private readonly config: ConfigService) {
-    const region = this.config.get<string>('AWS_REGION');
+    const region = this.config.get<string>('REGION');
 
     const sqsConfig: SQSClientConfig = { region };
 

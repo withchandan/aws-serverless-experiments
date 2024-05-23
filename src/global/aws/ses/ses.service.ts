@@ -34,7 +34,7 @@ export class SesService {
   constructor(private readonly config: ConfigService) {
     this.senderEmail = this.config.get<string>('SENDER_EMAIL');
     this.configurationName = this.config.get<string>('CONFIGURATION_NAME');
-    const region = this.config.get<string>('AWS_REGION');
+    const region = this.config.get<string>('REGION');
     const sesConfig: SESClientConfig = { region };
 
     this.client = new SESClient(sesConfig);

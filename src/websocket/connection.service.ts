@@ -17,7 +17,7 @@ export class ConnectionService {
     private readonly config: ConfigService,
     private readonly db: DynamodbService,
   ) {
-    const region = this.config.get<string>('AWS_REGION');
+    const region = this.config.get<string>('REGION');
     const websocketId = this.config.get<string>('AWS_WEBSOCKET_API_ID');
     this.table = this.config.get<string>('TABLE_NAME');
 
