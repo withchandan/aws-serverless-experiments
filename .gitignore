@@ -3,6 +3,8 @@
 /node_modules
 /.serverless
 /.webpack
+.env
+load-testing.yml
 
 # Logs
 logs

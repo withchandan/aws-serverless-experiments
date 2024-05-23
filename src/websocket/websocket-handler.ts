@@ -24,7 +24,9 @@ export const handler = async (
     console.log('Got disconnection request', connectionId);
   }
 
-  console.log(`Unknown route key ${routeKey}`);
+  if (routeKey === 'message') {
+    console.log('Got message request', connectionId);
+  }
 
   return { statusCode: 200, isBase64Encoded: false, body: 'Success' };
 };

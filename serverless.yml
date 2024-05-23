@@ -1,5 +1,7 @@
 service: aws-serverless-experiments
 
+useDotenv: true
+
 functions:
   main:
     handler: src/lambda.handler
@@ -16,15 +18,13 @@ functions:
     handler: src/websocket/websocket-handler.handler
     description: Websocket connection management handler
     lambdaInsights: true
+    environment:
+      AWS_WEBSOCKET_API_ID: ${env:AWS_WEBSOCKET_API_ID}
     events:
       - websocket:
           route: $connect
       - websocket:
           route: $disconnect
-      - websocket:
-          route: $default
-      - websocket:
-          route: ping
       - websocket:
           route: message
 
@@ -48,7 +48,26 @@ provider:
   lambdaHashingVersion: 20201221
   logRetentionInDays: 1
   websocketsApiName: ${self:service}
+  websocketsApiRouteSelectionExpression: $request.body.action
   websocketsDescription: Sample Websockets Project
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:BatchGet*
+            - dynamodb:BatchWrite*
+            - dynamodb:Query
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource:
+            - arn:aws:dynamodb:${self:provider.region}:*:table/${self:service}
+            - arn:aws:dynamodb:${self:provider.region}:*:table/${self:service}/index/*
+  environment:
+    AWS_REGION: ${env:AWS_REGION}
+    TABLE_NAME: ${env:TABLE_NAME}
 
 package:
   individually: true

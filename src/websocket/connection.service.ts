@@ -5,19 +5,46 @@ import {
   ApiGatewayManagementApiClient,
 } from '@aws-sdk/client-apigatewaymanagementapi';
 
+import { DynamodbService } from '../global';
+import { ConfigService } from '@nestjs/config';
+
 @Injectable()
 export class ConnectionService {
+  private readonly table: string;
   private readonly apiGatewayClient: ApiGatewayManagementApiClient;
 
-  constructor() {
+  constructor(
+    private readonly config: ConfigService,
+    private readonly db: DynamodbService,
+  ) {
+    const region = this.config.get<string>('AWS_REGION');
+    const websocketId = this.config.get<string>('AWS_WEBSOCKET_API_ID');
+    this.table = this.config.get<string>('TABLE_NAME');
+
     const apiEndpoint = new URL(
-      `https://oi9p3t10wa.execute-api.ap-south-1.amazonaws.com/dev`,
+      `https://${websocketId}.execute-api.ap-south-1.amazonaws.com/dev`,
     );
 
     this.apiGatewayClient = new ApiGatewayManagementApiClient({
-      region: 'ap-south-1',
+      region,
       endpoint: apiEndpoint.href,
     });
+  }
+
+  public async connect(connectionId: string): Promise<void> {
+    const date = new Date().toISOString();
+
+    await this.db.write(this.table, {
+      pk: 'connection',
+      sk: connectionId,
+      entity: 'connection',
+      createdAt: date,
+      updatedAt: date,
+    });
+  }
+
+  public async disconnect(connectionId: string): Promise<void> {
+    await this.db.delete(this.table, 'connection', connectionId);
   }
 
   public async sendMessage(

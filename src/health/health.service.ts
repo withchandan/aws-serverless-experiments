@@ -1,7 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { lastValueFrom } from 'rxjs';
-import { dump } from 'wtfnode';
 
 @Injectable()
 export class HealthService {
@@ -12,17 +11,11 @@ export class HealthService {
   }
 
   async version() {
-    await Promise.all(
-      [1, 2].map(async (ele) => {
-        const { data } = await lastValueFrom(
-          this.http.get(`https://jsonplaceholder.typicode.com/todos/${ele}`),
-        );
-
-        console.log(data);
-      }),
+    const { data } = await lastValueFrom(
+      this.http.get(`https://jsonplaceholder.typicode.com/todos/1`),
     );
 
-    dump();
+    console.log(data);
 
     return { version: '0.1.0' };
   }
