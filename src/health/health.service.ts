@@ -13,9 +13,9 @@ export class HealthService {
 
   async version() {
     await Promise.all(
-      [1, 2, 3, 4, 5].map(async () => {
+      [1, 2].map(async (ele) => {
         const { data } = await lastValueFrom(
-          this.http.get('https://jsonplaceholder.typicode.com/todos/1'),
+          this.http.get(`https://jsonplaceholder.typicode.com/todos/${ele}`),
         );
 
         console.log(data);
