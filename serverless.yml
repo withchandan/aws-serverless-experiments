@@ -18,8 +18,6 @@ functions:
     handler: src/websocket/websocket-handler.handler
     description: Websocket connection management handler
     lambdaInsights: true
-    environment:
-      AWS_WEBSOCKET_API_ID: ${env:AWS_WEBSOCKET_API_ID}
     events:
       - websocket:
           route: $connect
@@ -68,6 +66,7 @@ provider:
   environment:
     REGION: ${env:REGION}
     TABLE_NAME: ${env:TABLE_NAME}
+    AWS_WEBSOCKET_API_ID: ${env:AWS_WEBSOCKET_API_ID}
 
 package:
   individually: true
