@@ -2,9 +2,8 @@ service: aws-serverless-experiments
 
 functions:
   main:
-    handler: dist/main.handler
+    handler: src/lambda.handler
     description: API for experimenting purpose
-    provisionedConcurrency: 1
     lambdaInsights: true
     events:
       - http:
@@ -13,11 +12,29 @@ functions:
       - http:
           method: ANY
           path: '{proxy+}'
+  websocket-handler:
+    handler: src/websocket/websocket-handler.handler
+    description: Websocket connection management handler
+    events:
+      - websocket:
+          route: $connect
+      - websocket:
+          route: $disconnect
+      - websocket:
+          route: $default
+      - websocket:
+          route: ping
+      - websocket:
+          route: message
 
 custom:
   serverless-offline:
     noPrependStageInUrl: true
     httpPort: 9090
+
+  webpack:
+    webpackConfig: 'webpack.config.js'
+    concurrency: 2
 
 provider:
   profile: chandan-vishwakarma-experiments
@@ -29,14 +46,13 @@ provider:
   timeout: 10
   lambdaHashingVersion: 20201221
   logRetentionInDays: 1
+  websocketsApiName: ${self:service}
+  websocketsDescription: Sample Websockets Project
 
 package:
   individually: true
-  exclude:
-    - './**'
-  include:
-    - 'dist/**'
 
 plugins:
   - serverless-offline
+  - serverless-webpack
   - serverless-plugin-lambda-insights
