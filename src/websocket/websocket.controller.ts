@@ -8,8 +8,6 @@ export class WebsocketController {
 
   @Post('broadcast')
   async broadcastMessage(@Body() body: Record<string, unknown>): Promise<void> {
-    console.log(body.connectionIds);
-
     await this.connection.broadcastMessage(body.connectionIds as string[], {
       messageId: '1',
       name: 'Testing',

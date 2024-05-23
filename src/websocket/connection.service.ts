@@ -5,7 +5,7 @@ import {
   ApiGatewayManagementApiClient,
 } from '@aws-sdk/client-apigatewaymanagementapi';
 
-import { DynamodbService } from '../global';
+import { ConditionType, DynamodbService } from '../global';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
@@ -87,6 +87,25 @@ export class ConnectionService {
     connectionIds: string[],
     message: Record<string, unknown>,
   ): Promise<string[]> {
+    let ids: string[];
+
+    if (connectionIds && connectionIds.length) {
+      ids = connectionIds;
+    } else {
+      const { items: connections } = await this.db.query<{
+        pk: string;
+        sk: string;
+      }>(this.table, {
+        primaryKey: {
+          attName: 'pk',
+          attValue: 'connection',
+          condition: ConditionType.EQUAL,
+        },
+      });
+
+      ids = connections.map((connection) => connection.sk);
+    }
+
     const failedUserIds: string[] = [];
 
     const wsMessage = {
@@ -101,7 +120,7 @@ export class ConnectionService {
     const serializedPayload = Buffer.from(JSON.stringify(wsMessage));
 
     await Promise.all(
-      connectionIds.map(async (id) => {
+      ids.map(async (id) => {
         const command = new PostToConnectionCommand({
           Data: serializedPayload,
           ConnectionId: id,
@@ -110,10 +129,9 @@ export class ConnectionService {
         try {
           const gatewayResponse = await this.apiGatewayClient.send(command);
 
-          console.log({
-            message: 'broadcast websocket api gateway response',
-            meta: { connectionId: id, gatewayResponse },
-          });
+          console.log(
+            `broadcast websocket api gateway response ${gatewayResponse.$metadata.httpStatusCode}`,
+          );
         } catch (err) {
           failedUserIds.push(id);
           console.error({
