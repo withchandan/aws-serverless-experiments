@@ -15,6 +15,7 @@ functions:
   websocket-handler:
     handler: src/websocket/websocket-handler.handler
     description: Websocket connection management handler
+    lambdaInsights: true
     events:
       - websocket:
           route: $connect
