@@ -8,7 +8,7 @@ let server: Handler;
 const containerId = randomUUID();
 
 async function bootstrap(): Promise<Handler> {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { logger: false });
   await app.init();
 
   const expressApp = app.getHttpAdapter().getInstance();

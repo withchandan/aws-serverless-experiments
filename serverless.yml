@@ -7,6 +7,7 @@ functions:
     handler: src/lambda.handler
     description: API for experimenting purpose
     lambdaInsights: true
+    provisionedConcurrency: 1
     events:
       - http:
           method: ANY
@@ -42,7 +43,7 @@ provider:
   stage: dev
   runtime: nodejs18.x
   memorySize: 256
-  timeout: 10
+  timeout: 30
   lambdaHashingVersion: 20201221
   logRetentionInDays: 1
   websocketsApiName: ${self:service}
